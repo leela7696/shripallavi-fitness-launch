@@ -12,7 +12,7 @@ const categories = [
     title: "Amenities",
     items: [
       { icon: Waves, label: "Swimming Pool" },
-      { icon: Tennis, label: "Tennis Court" },
+      { icon: CircleDot, label: "Tennis Court" },
       { icon: ShowerHead, label: "Shower Facility" },
       { icon: Baby, label: "Child Care" },
     ],
