@@ -28,8 +28,33 @@ const ContactSection = () => {
           message: form.message,
         }),
       });
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || `Failed to send (${res.status})`);
+      // Fallback: if backend route is unavailable in the current host, use FormSubmit.
+      if (res.status === 404 || res.status === 405) {
+        const fsRes = await fetch("https://formsubmit.co/ajax/leelak919@gmail.com", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            message: form.message,
+            _replyto: form.email,
+            _subject: "New message from Shripallavi Fitness website",
+            _template: "box",
+            _captcha: "false",
+          }),
+        });
+        if (!fsRes.ok) {
+          const errData = await fsRes.json().catch(() => null);
+          throw new Error(errData?.message || `Failed to send (${fsRes.status})`);
+        }
+      } else {
+        const data = await res.json().catch(() => null);
+        if (!res.ok) throw new Error(data?.error || `Failed to send (${res.status})`);
+      }
       toast({ title: "Message Sent!", description: "We'll get back to you shortly." });
       setForm({ name: "", email: "", phone: "", message: "" });
     } catch (err) {
